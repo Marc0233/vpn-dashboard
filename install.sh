@@ -128,19 +128,21 @@ detect_os
 case $PKG in
     apt)
         apt-get update -q
-        install_pkg python3 python3-pip openvpn
+        install_pkg python3 python3-venv openvpn
         ;;
     dnf|yum)
-        install_pkg python3 python3-pip openvpn
+        install_pkg python3 python3-venv openvpn
         ;;
     pacman)
-        install_pkg python python-pip openvpn
+        install_pkg python python-virtualenv openvpn
         ;;
 esac
 ok "System packages installed"
 
-pip3 install flask --quiet
-ok "Flask installed"
+# Create venv and install Flask inside it (avoids PEP 668 externally-managed error)
+python3 -m venv "${INSTALL_DIR}/venv" --system-site-packages
+"${INSTALL_DIR}/venv/bin/pip" install flask --quiet
+ok "Flask installed (venv)"
 
 # ── Create directories ────────────────────────────────────────────────────────
 echo -e "\n${BD}Creating directories...${NC}"
@@ -1156,7 +1158,7 @@ Description=VPN Dashboard
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 ${INSTALL_DIR}/app.py
+ExecStart=${INSTALL_DIR}/venv/bin/python3 ${INSTALL_DIR}/app.py
 Restart=always
 RestartSec=5
 User=root
