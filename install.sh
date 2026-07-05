@@ -91,22 +91,22 @@ echo -e "\n${BD}Configuration${NC}\n"
 
 IFACE_GUESS=$(detect_iface)
 ask "LAN network interface [${IFACE_GUESS}]:"
-read -r LAN_IFACE
+read -r LAN_IFACE < /dev/tty
 LAN_IFACE="${LAN_IFACE:-$IFACE_GUESS}"
 ok "Interface: $LAN_IFACE"
 
 ask "Dashboard port [${DEFAULT_PORT}]:"
-read -r DASH_PORT
+read -r DASH_PORT < /dev/tty
 DASH_PORT="${DASH_PORT:-$DEFAULT_PORT}"
 [[ "$DASH_PORT" =~ ^[0-9]+$ ]] || die "Invalid port number"
 ok "Port: $DASH_PORT"
 
 ask "Dashboard username [admin]:"
-read -r DASH_USER
+read -r DASH_USER < /dev/tty
 DASH_USER="${DASH_USER:-admin}"
 
 ask "Dashboard password [admin]:"
-read -rs DASH_PASS
+read -rs DASH_PASS < /dev/tty
 echo
 DASH_PASS="${DASH_PASS:-admin}"
 [[ ${#DASH_PASS} -ge 6 ]] || warn "Password is very short — change it after install."
